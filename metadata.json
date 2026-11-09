@@ -1,0 +1,6 @@
+{
+  "name": "FINSTOCKCOIN — Global Crypto & Multi-Asset Exchange",
+  "description": "World-class cryptocurrency and multi-asset trading ecosystem with spot, futures, options, Indian INR & global fiat on-ramps, Web3 wallet, staking, and institutional-grade security.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
