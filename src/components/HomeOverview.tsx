@@ -13,7 +13,9 @@ import {
   CheckCircle2,
   Lock,
   Layers,
-  Award
+  Award,
+  Download,
+  Share2
 } from 'lucide-react';
 
 interface HomeOverviewProps {
@@ -27,6 +29,7 @@ interface HomeOverviewProps {
   onNavigateTab: (tab: any) => void;
   onSelectPair: (pair: SpotPair) => void;
   onOpenDownloadModal: () => void;
+  onOpenShareModal?: () => void;
 }
 
 export const HomeOverview: React.FC<HomeOverviewProps> = ({
@@ -40,6 +43,7 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
   onNavigateTab,
   onSelectPair,
   onOpenDownloadModal,
+  onOpenShareModal,
 }) => {
   const totalUsdValue = balances.reduce((sum, b) => sum + b.usdValue, 0);
   const totalLocalValue = totalUsdValue * rateToUSD;
@@ -95,36 +99,48 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
           </div>
 
           {/* Quick Action Buttons */}
-          <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-800/80">
+          <div className="flex flex-wrap items-center gap-2.5 pt-4 border-t border-slate-800/80">
             <button
               type="button"
               onClick={() => onNavigateTab('spot')}
-              className="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-blue-900/50 transition-all cursor-pointer"
+              className="px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-blue-900/50 transition-all cursor-pointer"
             >
               Start Spot Trading
             </button>
             <button
               type="button"
               onClick={() => onNavigateTab('wallet')}
-              className="px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-emerald-950/50 transition-all cursor-pointer flex items-center gap-1.5"
+              className="px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-emerald-950/50 transition-all cursor-pointer flex items-center gap-1.5"
             >
               <ArrowDownLeft className="w-4 h-4" />
               <span>Deposit INR / Crypto</span>
             </button>
-            <button
-              type="button"
-              onClick={() => onNavigateTab('earn')}
-              className="px-4 py-3 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-200 font-bold text-xs transition-colors cursor-pointer"
-            >
-              Earn 18.5% APY
-            </button>
+            {/* Prominent Android APK Download Button */}
             <button
               type="button"
               onClick={onOpenDownloadModal}
-              className="px-4 py-3 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-200 font-bold text-xs transition-colors cursor-pointer flex items-center gap-1.5"
+              className="px-4 py-2.5 sm:py-3 rounded-xl bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-500/50 text-emerald-300 font-bold text-xs transition-colors cursor-pointer flex items-center gap-2 shadow-md active:scale-95"
             >
-              <Smartphone className="w-4 h-4 text-amber-400" />
-              <span>Get Mobile App</span>
+              <Download className="w-4 h-4 text-emerald-400" />
+              <span>Download Android APK (v2.8.4)</span>
+            </button>
+            {/* App Share Button */}
+            {onOpenShareModal && (
+              <button
+                type="button"
+                onClick={onOpenShareModal}
+                className="px-4 py-2.5 sm:py-3 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-blue-300 border border-blue-500/30 font-bold text-xs transition-colors cursor-pointer flex items-center gap-1.5 active:scale-95"
+              >
+                <Share2 className="w-4 h-4 text-blue-400" />
+                <span>Share App</span>
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => onNavigateTab('earn')}
+              className="px-4 py-2.5 sm:py-3 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-200 font-bold text-xs transition-colors cursor-pointer"
+            >
+              Earn 18.5% APY
             </button>
           </div>
         </div>

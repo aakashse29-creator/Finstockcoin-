@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile details including verification tier, UID, and exchange settings",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Authentication UID" },
+        "email": { "type": "string", "description": "User email address" },
+        "displayName": { "type": "string", "description": "Display name" },
+        "fiuVerified": { "type": "boolean", "description": "FIU-IND KYC verification status" },
+        "kycTier": { "type": "string", "enum": ["Tier 1", "Tier 2", "Institutional"], "description": "KYC compliance tier" },
+        "panNumber": { "type": "string", "description": "Masked Indian PAN number" },
+        "tradingMode": { "type": "string", "enum": ["simple", "pro"], "description": "Active UI trading mode" },
+        "preferredCurrency": { "type": "string", "enum": ["INR", "USD", "EUR", "GBP"], "description": "Display fiat currency" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Account registration timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last profile update timestamp" }
+      },
+      "required": ["uid", "email"]
+    },
+    "SpotOrder": {
+      "title": "SpotOrder",
+      "description": "Crypto spot market or limit order placed by the user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Order identifier" },
+        "userId": { "type": "string", "description": "Owner UID" },
+        "pairId": { "type": "string", "description": "Trading pair, e.g., BTC_USDT" },
+        "side": { "type": "string", "enum": ["buy", "sell"], "description": "Order side" },
+        "type": { "type": "string", "enum": ["limit", "market", "stop_limit"], "description": "Order type" },
+        "price": { "type": "number", "description": "Order price per unit" },
+        "amount": { "type": "number", "description": "Amount to buy or sell" },
+        "filled": { "type": "number", "description": "Amount filled" },
+        "status": { "type": "string", "enum": ["open", "filled", "cancelled"], "description": "Execution status" },
+        "timestamp": { "type": "number", "description": "Creation timestamp in milliseconds" }
+      },
+      "required": ["id", "userId", "pairId", "side", "type", "price", "amount", "status", "timestamp"]
+    },
+    "WatchlistItem": {
+      "title": "WatchlistItem",
+      "description": "User pinned cryptocurrency or market trading pair",
+      "type": "object",
+      "properties": {
+        "pairId": { "type": "string", "description": "Trading pair identifier" },
+        "userId": { "type": "string", "description": "User UID who bookmarked this pair" },
+        "pinnedAt": { "type": "number", "description": "Timestamp when added to watchlist" }
+      },
+      "required": ["pairId", "userId", "pinnedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Private user profile collection for authenticated exchange account"
+    },
+    "/users/{userId}/orders/{orderId}": {
+      "schema": "SpotOrder",
+      "description": "User spot orders history and open order books"
+    },
+    "/users/{userId}/watchlist/{pairId}": {
+      "schema": "WatchlistItem",
+      "description": "Cryptocurrency pairs bookmarked by user"
+    }
+  }
+}

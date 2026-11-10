@@ -92,17 +92,17 @@ export const MegaMenuModal: React.FC<MegaMenuModalProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <button
               type="button"
               onClick={() => {
                 onClose();
                 onOpenDownloadModal();
               }}
-              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center gap-1.5 transition-colors"
+              className="px-2.5 sm:px-3 py-1.5 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center gap-1.5 transition-colors"
             >
-              <Smartphone className="w-3.5 h-3.5 text-amber-400" />
-              <span>Get Mobile Apps</span>
+              <Smartphone className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Android APK</span>
             </button>
             <button
               type="button"

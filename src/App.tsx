@@ -56,6 +56,10 @@ import { MegaMenuModal } from './components/MegaMenuModal';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { MobileDownloadModal } from './components/MobileDownloadModal';
 import { SupportChatModal } from './components/SupportChatModal';
+import { MobileBottomNav } from './components/MobileBottomNav';
+import { ShareAppModal } from './components/ShareAppModal';
+import { testConnection } from './lib/firebase';
+import { persistOrderToFirestore } from './lib/firestoreService';
 import { MessageSquare, ShieldCheck } from 'lucide-react';
 
 export default function App() {
@@ -69,6 +73,15 @@ export default function App() {
   const [supportChatOpen, setSupportChatOpen] = useState<boolean>(false);
   const [globalSearchOpen, setGlobalSearchOpen] = useState<boolean>(false);
   const [megaMenuOpen, setMegaMenuOpen] = useState<boolean>(false);
+  const [shareModalOpen, setShareModalOpen] = useState<boolean>(false);
+  const [firebaseActive, setFirebaseActive] = useState<boolean>(true);
+
+  // Initialize Firebase connection test on startup (required by firebase skill)
+  useEffect(() => {
+    testConnection().then((connected) => {
+      setFirebaseActive(connected);
+    });
+  }, []);
 
   // Exchange State
   const [pairs, setPairs] = useState<SpotPair[]>(INITIAL_SPOT_PAIRS);
@@ -166,6 +179,7 @@ export default function App() {
     };
 
     setOrders((prev) => [newOrder, ...prev]);
+    persistOrderToFirestore(newOrder); // Sync to Firebase Firestore
 
     // Update balances
     const [baseAsset, quoteAsset] = newOrder.pairId.split('_');
@@ -400,10 +414,12 @@ export default function App() {
         onOpenDownloadModal={() => setDownloadModalOpen(true)}
         onOpenGlobalSearch={() => setGlobalSearchOpen(true)}
         onOpenMegaMenu={() => setMegaMenuOpen(true)}
+        onOpenShareModal={() => setShareModalOpen(true)}
+        firebaseConnected={firebaseActive}
       />
 
-      {/* Main View Switcher */}
-      <main className="flex-1 w-full pb-16">
+      {/* Main View Switcher with bottom padding for mobile navigation */}
+      <main className="flex-1 w-full pb-24 md:pb-16">
         {(activeTab === 'overview' || activeTab === 'home') && (
           <HomeOverview
             pairs={pairs}
@@ -416,6 +432,7 @@ export default function App() {
             onNavigateTab={setActiveTab}
             onSelectPair={handleSelectPair}
             onOpenDownloadModal={() => setDownloadModalOpen(true)}
+            onOpenShareModal={() => setShareModalOpen(true)}
           />
         )}
 
@@ -548,15 +565,23 @@ export default function App() {
         )}
       </main>
 
-      {/* Floating 24/7 Support Assistant Button */}
+      {/* Floating 24/7 Support Assistant Button (positioned above mobile bottom navigation bar) */}
       <button
         type="button"
         onClick={() => setSupportChatOpen(true)}
-        className="fixed bottom-5 right-5 z-40 px-4 py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-2xl flex items-center gap-2 transition-transform hover:scale-105 cursor-pointer"
+        className="fixed bottom-16 md:bottom-5 right-4 md:right-5 z-30 px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-2xl flex items-center gap-2 transition-transform hover:scale-105 cursor-pointer"
+        title="24/7 AI Concierge & Support"
       >
         <MessageSquare className="w-4 h-4" />
         <span className="hidden sm:inline">24/7 AI Concierge &amp; Support</span>
       </button>
+
+      {/* Persistent Mobile Bottom Navigation Bar (Fixed for mobile phone viewports) */}
+      <MobileBottomNav
+        activeTab={activeTab}
+        onSelectTab={setActiveTab}
+        onOpenMegaMenu={() => setMegaMenuOpen(true)}
+      />
 
       {/* Modals and Overlays */}
       <MegaMenuModal
@@ -583,6 +608,11 @@ export default function App() {
       <MobileDownloadModal
         isOpen={downloadModalOpen}
         onClose={() => setDownloadModalOpen(false)}
+      />
+
+      <ShareAppModal
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
       />
 
       {/* Regulatory & Institutional Footer */}
